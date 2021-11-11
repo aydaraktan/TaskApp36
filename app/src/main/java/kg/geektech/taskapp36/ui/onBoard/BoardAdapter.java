@@ -61,6 +61,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.ViewHolder>{
                 }
             });
 
+
         }
 
         public void bind(int position) {

@@ -2,9 +2,11 @@ package kg.geektech.taskapp36.ui.onBoard;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.Button;
 
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import kg.geektech.taskapp36.Prefs;
 import kg.geektech.taskapp36.R;
 import kg.geektech.taskapp36.databinding.FragmentBoardBinding;
 import kg.geektech.taskapp36.databinding.FragmentHomeBinding;
@@ -48,21 +51,33 @@ public class BoardFragment extends Fragment {
             public void onLongClick(int position) {
 
             }
+
         });
 
         binding.scip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(requireActivity(),R.id.nav_host_fragment_activity_main).navigateUp();
+                close();
             }
         });
+
+
         new TabLayoutMediator(binding.tab, binding.viewPager, (tab, position) -> {
 
         }).attach();
 
-
-
-
-
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                requireActivity().finish();
+            }
+        });
     }
+    private void close(){
+        Prefs prefs= new Prefs(requireContext());
+        prefs.saveBoardState();
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+        navController.navigateUp();
+    }
+
 }
