@@ -5,25 +5,20 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.RecyclerView;
-
 import kg.geektech.taskapp36.App;
 import kg.geektech.taskapp36.Prefs;
 import kg.geektech.taskapp36.R;
 import kg.geektech.taskapp36.databinding.FragmentHomeBinding;
 import kg.geektech.taskapp36.interfaces.OnItemClickListener;
 import kg.geektech.taskapp36.model.Task;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -31,16 +26,15 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private TaskAdapter adapter;
     private int pos;
-    private RecyclerView res;
+    private boolean b;
 
-
-
-    @Override
+        @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
         adapter = new TaskAdapter();
         adapter.addItems(App.getInstance().getDataBase().taskDao().getAll());
+            Collections.reverse(adapter.getList());
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onClick(int position) {
@@ -48,7 +42,6 @@ public class HomeFragment extends Fragment {
                 Task task = adapter.getItem(position);
                 openFragment(task);
             }
-
             @Override
             public void onLongClick(int position) {
                 Task task = adapter.getItem(position);
@@ -65,30 +58,33 @@ public class HomeFragment extends Fragment {
         inflater.inflate(R.menu.main_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-    public boolean lol;
+
             @Override
         public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-                Prefs prefs = new Prefs(requireContext());
-        Toast.makeText(requireContext(), "help", Toast.LENGTH_SHORT).show();
 
-        if(prefs.cancel2()) {
+        if(!b) {
             Collections.sort(adapter.getList(), new Comparator<Task>() {
                 @Override
                 public int compare(Task o1, Task o2) {
                     return o1.getText().compareTo(o2.getText());
                 }
             });
-            prefs.getLol();
+
+            b=true;
+
         }
 
         else
         {
+            adapter.getList().clear();
+            adapter.addItems(App.getInstance().getDataBase().taskDao().getAll());
             Collections.reverse(adapter.getList());
-            prefs.setLol();
+            b=false;
+
         }
+//              binding.recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
 
-
-                binding.recyclerView.setAdapter(adapter);
         return super.onOptionsItemSelected(item);
     }
 
@@ -98,7 +94,6 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
         return root;
     }
-
 
     @Override
     public void onDestroyView() {
@@ -117,8 +112,6 @@ public class HomeFragment extends Fragment {
 
         initList();
     }
-
-
     private void initList() {
         binding.recyclerView.setAdapter(adapter);
 
@@ -131,8 +124,6 @@ public class HomeFragment extends Fragment {
                     else
                         adapter.updateItem(pos, task);
                 });
-
-
     }
 
     private void openFragment(Task task) {

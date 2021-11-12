@@ -106,7 +106,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            btn = itemView.findViewById(R.id.sort);
+
             textTitle = itemView.findViewById(R.id.textTitle);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
