@@ -43,4 +43,18 @@ public class Prefs {
     public String getImage(){
         return preferences.getString("tol",null);
     }
+
+    public boolean cancel2()
+    {
+        return  preferences.getBoolean("key", true);
+    }
+
+    public void setLol()
+    {
+        preferences.edit().putBoolean("key",true).apply();
+    }
+    public void getLol()
+    {
+        preferences.edit().putBoolean("key",false).apply();
+    }
 }
