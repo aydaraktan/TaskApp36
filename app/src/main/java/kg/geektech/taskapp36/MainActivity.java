@@ -12,6 +12,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import kg.geektech.taskapp36.databinding.ActivityMainBinding;
 
 
@@ -37,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
         if (!prefs.isBoardShown()) {
             navController.navigate(R.id.boardFragment);
         }
+        if(FirebaseAuth.getInstance().getCurrentUser()==null)
+        {
+            navController.navigate(R.id.loginFragment);
+        }
 
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
@@ -50,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     binding.navView.setVisibility(View.GONE);
                 }
-                if (destination.getId() == R.id.boardFragment) {
+                if (destination.getId() == R.id.boardFragment || destination.getId() == R.id.loginFragment) {
                     getSupportActionBar().hide();
                 } else {
                     getSupportActionBar().show();

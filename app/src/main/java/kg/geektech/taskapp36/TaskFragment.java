@@ -62,9 +62,9 @@ public class TaskFragment extends Fragment {
             App.getInstance().getDataBase().taskDao().update(task);
         }
 
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("task", task);
-        getParentFragmentManager().setFragmentResult("rk_task", bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("task", task);
+//        getParentFragmentManager().setFragmentResult("rk_task", bundle);
         close();
 
     }

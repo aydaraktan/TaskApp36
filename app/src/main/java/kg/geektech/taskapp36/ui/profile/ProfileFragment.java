@@ -1,28 +1,30 @@
 package kg.geektech.taskapp36.ui.profile;
 
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,6 +37,7 @@ public class ProfileFragment extends Fragment {
     private EditText editText;
     private ImageView img;
     private Prefs prefs;
+    private Button btn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,7 +73,27 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initListeners(View view) {
+        view.findViewById(R.id.btn_sign_in).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                alertDialog.setTitle("Выход с аккаунта");
+                alertDialog.setMessage("Вы уверены что хотите выйти с аккаунта?");
 
+                alertDialog.setNegativeButton("Нет", (dialog, which) -> {
+
+                });
+
+                alertDialog.setPositiveButton("Да", (dialog, which) -> {
+                    FirebaseAuth.getInstance().signOut();
+                    NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
+                    navController.navigate(R.id.loginFragment);
+                });
+
+                alertDialog.show();
+                FirebaseAuth.getInstance().signOut();
+            }
+        });
         img = view.findViewById(R.id.image);
         editText = view.findViewById(R.id.edit);
 
@@ -111,6 +134,7 @@ public class ProfileFragment extends Fragment {
         return BitmapFactory
                 .decodeByteArray(decodedByte, 0, decodedByte.length);
     }
+
 
 
 }
