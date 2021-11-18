@@ -36,12 +36,12 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
         Prefs prefs = new Prefs(this);
-        if (!prefs.isBoardShown()) {
-            navController.navigate(R.id.boardFragment);
-        }
         if(FirebaseAuth.getInstance().getCurrentUser()==null)
         {
             navController.navigate(R.id.loginFragment);
+        }
+        if (!prefs.isBoardShown()) {
+            navController.navigate(R.id.boardFragment);
         }
 
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {

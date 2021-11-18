@@ -73,7 +73,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initListeners(View view) {
-        view.findViewById(R.id.btn_sign_in).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.btn_sign_out).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
@@ -91,7 +91,7 @@ public class ProfileFragment extends Fragment {
                 });
 
                 alertDialog.show();
-                FirebaseAuth.getInstance().signOut();
+
             }
         });
         img = view.findViewById(R.id.image);

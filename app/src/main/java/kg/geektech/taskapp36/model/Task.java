@@ -9,8 +9,21 @@ public class Task implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private long id;
+    private String docId;
     private String text;
     private long createdAt;
+
+    public String getDocId() {
+        return docId;
+    }
+
+    public void setDocId(String docId) {
+        this.docId = docId;
+    }
+
+
+    public Task() {
+    }
 
     public Task(String text, long createdAt) {
         this.text = text;

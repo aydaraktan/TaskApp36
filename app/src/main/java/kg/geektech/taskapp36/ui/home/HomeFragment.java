@@ -25,7 +25,6 @@ import java.util.Comparator;
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private TaskAdapter adapter;
-    private int pos;
     private boolean b;
 
         @Override
@@ -33,14 +32,12 @@ public class HomeFragment extends Fragment {
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
         adapter = new TaskAdapter();
-
-            //Collections.reverse(adapter.getList());
-            adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onClick(int position) {
-                pos = position;
                 Task task = adapter.getItem(position);
+                adapter.updateItem(position,task);
                 openFragment(task);
             }
             @Override
@@ -51,8 +48,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
-
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -66,19 +61,14 @@ public class HomeFragment extends Fragment {
         if(!b) {
             adapter.getList().clear();
             adapter.addItems(App.getInstance().getDataBase().taskDao().getAllSortedByTitle());
-
-
             b = true;
         }
         else
         {
             adapter.getList().clear();
             adapter.addItems(App.getInstance().getDataBase().taskDao().getAll());
-
             b=false;
-
         }
-//              binding.recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
 
         return super.onOptionsItemSelected(item);
@@ -101,9 +91,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        
         view.findViewById(R.id.fab).setOnClickListener(view1 -> {
-            pos = -1;
             openFragment(null);
         });
 
@@ -112,18 +100,7 @@ public class HomeFragment extends Fragment {
     private void initList() {
         binding.recyclerView.setAdapter(adapter);
         adapter.getList().clear();
-
         adapter.addItems(App.getInstance().getDataBase().taskDao().getAll());
-
-//        getParentFragmentManager().setFragmentResultListener("rk_task", getViewLifecycleOwner(),
-//                (requestKey, result) -> {
-//
-//                    Task task = (Task) result.getSerializable("task");
-//                    if (pos == -1)
-//                        adapter.addItem(task);
-//                    else
-//                        adapter.updateItem(pos, task);
-//                });
     }
 
     private void openFragment(Task task) {

@@ -38,6 +38,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public TaskAdapter() {
         list = new ArrayList<>();
     }
+    private Task task=new Task();
 
 
     @NonNull
@@ -85,6 +86,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     }
 
 
+
     public void addItems(List<Task> tasks) {
         list.addAll(tasks);
         notifyDataSetChanged();
@@ -102,8 +104,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView textTitle;
-        private Button btn;
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -122,14 +122,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                     return true;
                 }
             });
-
-//            btn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//
-//                    Collections.reverse(getList());
-//                }
-//            });
 
         }
 

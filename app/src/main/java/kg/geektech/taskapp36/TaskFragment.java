@@ -8,12 +8,19 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Random;
 
@@ -31,6 +38,7 @@ public class TaskFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_task, container, false);
 
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -53,20 +61,54 @@ public class TaskFragment extends Fragment {
 
     private void save() {
         String text = editText.getText().toString().trim();
-
-        if (task == null) {
-            task = new Task(text, System.currentTimeMillis());
-            App.getInstance().getDataBase().taskDao().insert(task);
-        } else {
-            task.setText(text);
-            App.getInstance().getDataBase().taskDao().update(task);
+        if(text.isEmpty())
+        {
+            Toast.makeText(requireActivity(), "пустой", Toast.LENGTH_SHORT).show();
         }
+        else {
+            if (task == null) {
+                task = new Task(text, System.currentTimeMillis());
+                App.getInstance().getDataBase().taskDao().insert(task);
+                saveToFireStore(task);
+            } else {
+                task.setText(text);
+                App.getInstance().getDataBase().taskDao().update(task);
+                if (task.getDocId() != null) {
+                    updateToFireStore(task);
+                }
+                else
+                close();
+            }
+        }
+    }
 
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("task", task);
-//        getParentFragmentManager().setFragmentResult("rk_task", bundle);
-        close();
+    private void saveToFireStore(Task task) {
+        FirebaseFirestore.getInstance().collection("tasks")
+                .add(task).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentReference> t) {
+                if (t.isSuccessful()) {
+                    close();
+                }
+            }
+        });
+    }
+    private void updateToFireStore(Task task){
 
+        FirebaseFirestore.getInstance().collection("tasks").document(task.getDocId())
+                .update("text",task.getText()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(requireActivity(), "успешно обновлено", Toast.LENGTH_SHORT).show();
+
+                close();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(requireActivity(), "не обновлено", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void close() {
