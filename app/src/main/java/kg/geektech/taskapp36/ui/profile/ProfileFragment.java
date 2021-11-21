@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
@@ -24,7 +25,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,7 +44,8 @@ public class ProfileFragment extends Fragment {
     private EditText editText;
     private ImageView img;
     private Prefs prefs;
-    private Button btn;
+    private StorageReference mStorageRef;
+    private Uri uploadUri;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,6 +116,7 @@ public class ProfileFragment extends Fragment {
                             e.printStackTrace();
                         }
                         img.setImageURI(uri);
+                        uploadImage();
                     }
                 }
         );
@@ -116,6 +125,9 @@ public class ProfileFragment extends Fragment {
             intent.setType("image/*");
             activityResultLauncher.launch(intent);
         });
+
+        mStorageRef= FirebaseStorage.getInstance().getReference("ImageDB");
+
     }
 
     public static String encodeToBase64(Bitmap image) {
@@ -135,6 +147,23 @@ public class ProfileFragment extends Fragment {
                 .decodeByteArray(decodedByte, 0, decodedByte.length);
     }
 
-
-
+    private void uploadImage(){
+        Bitmap bitmap =((BitmapDrawable) img.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+        byte[] byteArray = baos.toByteArray();
+        final StorageReference mRef =mStorageRef.child(System.currentTimeMillis()+"my_image");
+        UploadTask up =mRef.putBytes(byteArray);
+        Task<Uri> task = up.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                return mRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                uploadUri=task.getResult();
+            }
+        });
+    }
 }

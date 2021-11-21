@@ -1,5 +1,6 @@
 package kg.geektech.taskapp36.ui.dashboard;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +33,7 @@ public class DashboardFragment extends Fragment {
 
     private TaskAdapter adapter;
     private FragmentDashboardBinding binding;
-
+    private Uri uri;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class DashboardFragment extends Fragment {
                 NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
                 navController.navigate(R.id.taskFragment, bundle);
 
+
             }
             @Override
             public void onLongClick(int position) {
@@ -73,24 +75,25 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         binding.recyclerView.setAdapter(adapter);
         getData();
     }
-
     private void getData() {
         adapter.getList().clear();
-
         FirebaseFirestore.getInstance().collection("tasks")
                 .get().addOnSuccessListener(snapshots -> {
-            //  List<Task> list = snapshots.toObjects(Task.class);
+             // List<Task> list = snapshots.toObjects(Task.class);
             List<Task> list = new ArrayList<>();
             for (DocumentSnapshot snapshot : snapshots) {
                         Task task = snapshot.toObject(Task.class);
                         task.setDocId(snapshot.getId());
+                        task.getImageUrl();
                         list.add(task);
                     }
+
+
             adapter.addItems(list);
                 });
+
     }
 }

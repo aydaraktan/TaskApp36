@@ -2,23 +2,29 @@ package kg.geektech.taskapp36.ui.home;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import kg.geektech.taskapp36.App;
+import kg.geektech.taskapp36.MainActivity;
 import kg.geektech.taskapp36.Prefs;
 import kg.geektech.taskapp36.R;
 import kg.geektech.taskapp36.TaskFragment;
@@ -39,7 +45,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         list = new ArrayList<>();
     }
     private Task task=new Task();
-
+    private Uri uri;
 
     @NonNull
     @Override
@@ -63,6 +69,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bind(list.get(position));
+        Glide.with(holder.getImage()).load(list.get(position).getImageUrl()).into(holder.getImage());
     }
 
     @Override
@@ -104,10 +111,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView textTitle;
+        private ImageView image;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             textTitle = itemView.findViewById(R.id.textTitle);
+            image = itemView.findViewById(R.id.imageloo);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -123,6 +131,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                 }
             });
 
+        }
+
+        public ImageView getImage() {
+            return image;
         }
 
         public void bind(Task task) {

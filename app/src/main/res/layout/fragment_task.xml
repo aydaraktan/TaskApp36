@@ -19,8 +19,13 @@
             android:id="@+id/editText"
             android:layout_width="match_parent"
             android:hint="введите задачу"
-
             android:layout_height="wrap_content"/>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_gravity="center_horizontal"
+            />
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSave"
@@ -29,6 +34,14 @@
         android:textAllCaps="false"
         android:layout_height="wrap_content"
         android:text="Save"
+        />
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@color/black"
+
         />
 
 

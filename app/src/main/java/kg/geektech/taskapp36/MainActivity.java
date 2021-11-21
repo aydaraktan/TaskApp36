@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
                 if (destination.getId() == R.id.boardFragment) ;
             }
         });
-
     }
 
     @Override

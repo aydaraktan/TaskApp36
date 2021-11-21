@@ -12,6 +12,21 @@ public class Task implements Serializable {
     private String docId;
     private String text;
     private long createdAt;
+    private String imageUrl;
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public Task(String text, long createdAt, String imageUrl) {
+        this.text = text;
+        this.createdAt = createdAt;
+        this.imageUrl = imageUrl;
+    }
 
     public String getDocId() {
         return docId;
@@ -20,7 +35,6 @@ public class Task implements Serializable {
     public void setDocId(String docId) {
         this.docId = docId;
     }
-
 
     public Task() {
     }
